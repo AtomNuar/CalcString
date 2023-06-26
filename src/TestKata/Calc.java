@@ -10,7 +10,11 @@ public class Calc {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Введите выражение: ");
-        text = scanner.nextLine();
+        text = scanner.nextLine().trim();
+        
+        if (!text.startsWith("\"")) {
+            throw new IllegalArgumentException("Первым аргументом должна быть строка в кавычках!");
+        }
 
 
         String result = getResult();
@@ -20,13 +24,9 @@ public class Calc {
         } else {
             System.out.println("Результат: " + "\"" + result + "\"");
         }
-
         if (wordOne.length() > 10 || wordTwo.length() > 10) {
             throw new IllegalArgumentException("Длина строки не должна превышат 10 символов");
-        }
-        if (!text.startsWith("\"")) {
-            throw new IllegalArgumentException("Первым аргументом должна быть строка в кавычках!");
-        }
+        }    
     }
 
     public static String sub() {
@@ -38,7 +38,7 @@ public class Calc {
                 return wordOne.replace(wordTwo, "");
             }
             if (isNumber(wordOne) || isNumber(wordTwo)) {
-                throw new RuntimeException("При вычитании не ипользуются числа");
+                throw new RuntimeException("Вычитание работает только со строками");
             }
         }
         return wordOne;
@@ -47,11 +47,13 @@ public class Calc {
 
     public static String add() {
         if (text.contains("+")) {
-            String[] textSplit = text.replaceAll("\"", "").split(" \\+ ");
+            String[] textSplit = text.split(" \\+ ");
             wordOne = textSplit[0];
             wordTwo = textSplit[1];
-            if (isNumber(wordTwo)) {
-                throw new RuntimeException("При сложении не используются числа");
+            if (wordTwo.contains("\"")) {
+                return (wordOne + wordTwo).replaceAll("\"", "");
+            } else {
+                throw new RuntimeException("Сложение работает только со строками");
             }
         }
         return wordOne + wordTwo;
